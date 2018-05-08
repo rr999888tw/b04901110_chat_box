@@ -1,20 +1,66 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Widget, addResponseMessage, toggleWidget } from 'react-chat-widget';
+import { Launcher } from './react-chat-window/src'
+import messageHistory from './react-chat-window/demo/src/messageHistory';
+
+import 'react-chat-widget/lib/styles.css';
+import './index.css';
+
 
 class App extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      messageList: messageHistory
+    };
+  }
+
+  _onMessageWasSent(message) {
+    this.setState({
+      messageList: [...this.state.messageList, message]
+    })
+  }
+
+  _sendMessage(text) {
+    if (text.length > 0) {
+      this.setState({
+        messageList: [...this.state.messageList, {
+          author: 'them',
+          type: 'text',
+          data: { text }
+        }]
+      })
+    }
+  }
+
+  componentDidMount() {
+    return fetch('http://127.0.0.1:3001/birds/users')
+      .then(response => response.json())
+      .then((responseJson) => {
+        console.log(typeof (responseJson));
+        console.log(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+    return (<div>
+      <h3> hello world </h3>
+      <div>
+        <Launcher
+          agentProfile={{
+            teamName: 'react-live-chat',
+            imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'
+          }}
+          onMessageWasSent={this._onMessageWasSent.bind(this)}
+          messageList={this.state.messageList}
+        // showEmoji
+        />
       </div>
-    );
+    </div>)
   }
 }
 
