@@ -9,53 +9,77 @@ import './index.css';
 
 class App extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      messageList: messageHistory
+      PplList: ['Alice', 'Bob', 'Christ', 'David', 'Evan'],
+      user: "",
+      personInTalk: "",
+      contactList: [],
+
+      // messageList: [],
+      totalMessages: [],
+      messageList: messageHistory,
     };
   }
+
+  componentDidMount() {
+    let polling = () => {
+      if (this.state.user == "") return;
+      // else {
+      //   fetch("http://127.0.0.1:3001/users")
+      // };
+    }
+    setInterval(polling, 1000);
+  }
+
 
   _onMessageWasSent(message) {
     this.setState({
       messageList: [...this.state.messageList, message]
+    });
+    console.log(message);
+  }
+
+  chooseWhoAmI = (name) => {
+    let userIdx = this.state.PplList.findIndex((ele) => { return ele === name; });
+    this.setState({
+      user: name,
+      contactList: this.state.PplList.slice(0, userIdx).concat(this.state.PplList.slice(userIdx + 1, this.state.PplList.length))
     })
+
   }
 
-  _sendMessage(text) {
-    if (text.length > 0) {
-      this.setState({
-        messageList: [...this.state.messageList, {
-          author: 'them',
-          type: 'text',
-          data: { text }
-        }]
-      })
-    }
-  }
-
-  componentDidMount() {
-    return fetch('http://127.0.0.1:3001/birds/users')
-      .then(response => response.json())
-      .then((responseJson) => {
-        console.log(typeof (responseJson));
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  choosePersonInTalk = (name) => {
+    this.setState({
+      personInTalk: name
+    });
   }
 
   render() {
+    let members = this.state.PplList.map((ele, idx) => {
+      return (
+        <button onClick={() => { this.chooseWhoAmI(ele) }} key={idx}> {ele} </button>
+      )
+    });
+    let contactList = this.state.contactList.map((ele, idx) => {
+      return (
+        <button onClick={() => this.choosePersonInTalk(ele)} key={idx}> {ele} </button>
+      )
+    });
     return (<div>
-      <h3> hello world </h3>
+      <h1> {this.state.user.length == 0 ? "Choose who you are" : this.state.user} </h1>
+      <h2> I am {members} </h2>
+      <h1> Contact List </h1>
+      <h2> I want to chat with {contactList}</h2>
+      <h1> {this.state.personInTalk.length == 0 ? "" : `Person in conversation: ${this.state.personInTalk}`} </h1>
       <div>
         <Launcher
           agentProfile={{
-            teamName: 'react-live-chat',
+            teamName: this.state.personInTalk,
             imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'
           }}
-          onMessageWasSent={this._onMessageWasSent.bind(this)}
+          onMessageWasSent={(new_obj) => this._onMessageWasSent(new_obj)}
           messageList={this.state.messageList}
         // showEmoji
         />
@@ -65,3 +89,15 @@ class App extends Component {
 }
 
 export default App;
+
+// componentDidMount() {
+//   return fetch('http://127.0.0.1:3001/birds/users')
+//     .then(response => response.json())
+//     .then((responseJson) => {
+//       console.log(typeof (responseJson));
+//       console.log(responseJson.movies);
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//     });
+// }
