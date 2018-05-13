@@ -23,31 +23,48 @@ class App extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   let polling = () => {
-  //     if (this.state.user === "" || this.state.personInTalk === "") return;
-  //     else return (fetch(`http://localhost:4500/users/${this.state.user}/${this.state.personInTalk}`)
-  //       .then((response) => response.json())
-  //       .then((responseJson) => {
-  //         console.log(responseJson);
-  //         this.setState({
-  //           messageList: responseJson
-  //         })
-  //       })
-  //       .catch((err) => {
-  //         // console.log(err);
-  //       })
-  //     );
+  handleUpdate = (responseArr) => {
+    let len = responseArr.length;
+    console.log(len);
+    let messageList = [];
+    
+    for (let i = 0; i < len; ++i){
+      messageList.push({ 
+        type: 'text',  
+        author: responseArr[i].sender==this.state.user? 'me':'them', 
+        data: responseArr[i].data
+      })
+    }
+    this.setState({
+      messageList: messageList
+    })
+  }
 
-  //   }
-  //   setInterval(polling, 2000);
-  // }
+
+  componentDidMount() {
+    let polling = () => {
+      if (this.state.user === "" || this.state.personInTalk === "") return;
+      else return (fetch(`/users/${this.state.user}/${this.state.personInTalk}`)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          this.handleUpdate(responseJson);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+      );
+
+    }
+    setInterval(polling, 2000);
+  }
 
 
   _onMessageWasSent(message) {
 
     var url = 'users/update';
     var data = { 
+      type: message.type,
       sender: this.state.user,
       receiver: this.state.personInTalk,
       message: message.data
@@ -72,11 +89,9 @@ class App extends Component {
       console.error(err);
     });
 
-
     this.setState({
       messageList: [...this.state.messageList, message]
     });
-    // console.log(message);
 
   }
 
