@@ -19,26 +19,65 @@ class App extends Component {
 
       // messageList: [],
       totalMessages: [],
-      messageList: messageHistory,
+      messageList: []
     };
   }
 
-  componentDidMount() {
-    let polling = () => {
-      if (this.state.user == "") return;
-      // else {
-      //   fetch("http://127.0.0.1:3001/users")
-      // };
-    }
-    setInterval(polling, 1000);
-  }
+  // componentDidMount() {
+  //   let polling = () => {
+  //     if (this.state.user === "" || this.state.personInTalk === "") return;
+  //     else return (fetch(`http://localhost:4500/users/${this.state.user}/${this.state.personInTalk}`)
+  //       .then((response) => response.json())
+  //       .then((responseJson) => {
+  //         console.log(responseJson);
+  //         this.setState({
+  //           messageList: responseJson
+  //         })
+  //       })
+  //       .catch((err) => {
+  //         // console.log(err);
+  //       })
+  //     );
+
+  //   }
+  //   setInterval(polling, 2000);
+  // }
 
 
   _onMessageWasSent(message) {
+
+    var url = 'users/update';
+    var data = { 
+      sender: this.state.user,
+      receiver: this.state.personInTalk,
+      message: message.data
+    };
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      },
+    };
+
+    fetch(url, options)
+    .then((response) => {
+      return response.json();
+    })
+    .then((jsonObject) => {
+      console.log(jsonObject)
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
+
     this.setState({
       messageList: [...this.state.messageList, message]
     });
-    console.log(message);
+    // console.log(message);
+
   }
 
   chooseWhoAmI = (name) => {
@@ -54,6 +93,7 @@ class App extends Component {
     this.setState({
       personInTalk: name
     });
+
   }
 
   render() {
