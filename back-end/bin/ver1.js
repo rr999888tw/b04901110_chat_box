@@ -32,10 +32,6 @@ router.post('/update', function (req, res) {
     let resjson = { type: type, sender: sender, receiver: receiver, data: message};
     a = a.slice().concat(resjson);
     console.log(resjson);
-    // console.log(reqBody);
-    // console.log(sender);
-    // console.log(receiver);
-    // console.log(message);
     
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

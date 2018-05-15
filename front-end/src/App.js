@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Widget, addResponseMessage, toggleWidget } from 'react-chat-widget';
+// import { Widget, addResponseMessage, toggleWidget } from 'react-chat-widget';
 import { Launcher } from './react-chat-window/src'
 import messageHistory from './react-chat-window/demo/src/messageHistory';
 
-import 'react-chat-widget/lib/styles.css';
+// import 'react-chat-widget/lib/styles.css';
 import './index.css';
 
 
@@ -144,15 +144,3 @@ class App extends Component {
 }
 
 export default App;
-
-// componentDidMount() {
-//   return fetch('http://127.0.0.1:3001/birds/users')
-//     .then(response => response.json())
-//     .then((responseJson) => {
-//       console.log(typeof (responseJson));
-//       console.log(responseJson.movies);
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//     });
-// }

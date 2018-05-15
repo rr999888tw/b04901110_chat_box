@@ -7,5 +7,5 @@ import { Launcher } from './react-chat-window/src'
 import messageHistory from './react-chat-window/demo/src/messageHistory';
 
 
-
+registerServiceWorker();
 ReactDOM.render(<App />, document.getElementById('root'));
